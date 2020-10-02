@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.ThreadContext;
 import org.openqa.selenium.By;
@@ -55,6 +56,8 @@ import io.appium.java_client.service.local.AppiumServerHasNotBeenStartedLocallyE
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
 
+import static com.codeborne.selenide.WebDriverRunner.setWebDriver;
+
 public class BaseTest {
 	protected static ThreadLocal <AppiumDriver> driver = new ThreadLocal<AppiumDriver>();
 	protected static ThreadLocal <Properties> props = new ThreadLocal<Properties>();
@@ -71,6 +74,7 @@ public class BaseTest {
 	  
 	  public void setDriver(AppiumDriver driver2) {
 		  driver.set(driver2);
+		  //setWebDriver(driver2);
 	  }
 	  
 	  public Properties getProps() {
@@ -114,6 +118,7 @@ public class BaseTest {
 	  }
 	
 	public BaseTest() {
+		//setWebDriver(driver.get());
 		PageFactory.initElements(new AppiumFieldDecorator(getDriver()), this);
 	}
 	
@@ -156,11 +161,12 @@ public class BaseTest {
 	@BeforeSuite
 	public void beforeSuite() throws Exception, Exception {
 		ThreadContext.put("ROUTINGKEY", "ServerLogs");
-		server = getAppiumService();
+		//server = getAppiumService();
 		if(!checkIfAppiumServerIsRunnning(4723)) {
-			server.start();
-			server.clearOutPutStreams();
-			utils.log().info("Appium server started");
+			//server.start();
+			//server.clearOutPutStreams();
+			//utils.log().info("Appium server started");
+			utils.log().error("Appium server not found");
 		} else {
 			utils.log().info("Appium server already running");
 		}	
@@ -180,12 +186,12 @@ public class BaseTest {
 	    }
 	    return isAppiumServerRunning;
 	}
-	
+	/*
 	@AfterSuite
 	public void afterSuite() {
 		server.stop();
 		utils.log().info("Appium server stopped");
-	}
+	}*/
 	
 	public AppiumDriverLocalService getAppiumServerDefault() {
 		return AppiumDriverLocalService.buildDefaultService();
@@ -268,14 +274,14 @@ public class BaseTest {
 			case "Android":
 				desiredCapabilities.setCapability("automationName", props.getProperty("androidAutomationName"));	
 				desiredCapabilities.setCapability("appPackage", props.getProperty("androidAppPackage"));
-				desiredCapabilities.setCapability("appActivity", props.getProperty("androidAppActivity"));
+				//desiredCapabilities.setCapability("appActivity", props.getProperty("androidAppActivity"));
 				if(emulator.equalsIgnoreCase("true")) {
 					desiredCapabilities.setCapability("avd", deviceName);
 					desiredCapabilities.setCapability("avdLaunchTimeout", 120000);
 				}
 				desiredCapabilities.setCapability("systemPort", systemPort);
 				desiredCapabilities.setCapability("chromeDriverPort", chromeDriverPort);
-				String androidAppUrl = getClass().getResource(props.getProperty("androidAppLocation")).getFile();
+				String androidAppUrl = /*getClass().getResource(*/props.getProperty("androidAppLocation")/*).getFile()*/;
 				utils.log().info("appUrl is" + androidAppUrl);
 				desiredCapabilities.setCapability("app", androidAppUrl);
 
@@ -309,11 +315,25 @@ public class BaseTest {
 		  }
 	  }
   }
-  
-  public void waitForVisibility(MobileElement e) {
-	  WebDriverWait wait = new WebDriverWait(getDriver(), TestUtils.WAIT);
-	  wait.until(ExpectedConditions.visibilityOf(e));
-  }
+
+	public void waitForInvisibility(WebElement e, int timeOut, int polling) {
+		Wait<WebDriver> wait;
+		try{
+			wait = new FluentWait<WebDriver>(getDriver())
+					.withTimeout(Duration.ofSeconds(timeOut))
+					.pollingEvery(Duration.ofSeconds(polling))
+					.ignoring(NoSuchElementException.class);
+			wait.until(ExpectedConditions.invisibilityOf(e));
+		}catch (Exception exc){
+			utils.log().info("Element not found when beginning to wait for invisibility");
+			return;
+		}
+	}
+
+	public void waitForClickablity(MobileElement e) {
+		WebDriverWait wait = new WebDriverWait(getDriver(), 10);
+		wait.until(ExpectedConditions.elementToBeClickable(e));
+	}
   
   public void waitForVisibility(WebElement e){
 	  Wait<WebDriver> wait = new FluentWait<WebDriver>(getDriver())

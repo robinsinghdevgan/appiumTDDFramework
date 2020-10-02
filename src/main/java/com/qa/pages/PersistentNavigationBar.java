@@ -6,28 +6,43 @@ import io.appium.java_client.pagefactory.AndroidFindBy;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 
 public class PersistentNavigationBar extends BaseTest {
-    @AndroidFindBy(id = "homeButton")
+    @AndroidFindBy(accessibility = "Home")
     @iOSXCUITFindBy(id = "homeButton")
     private MobileElement homeButton;
 
-    @AndroidFindBy(id = "approvalsButton")
+    @AndroidFindBy(accessibility = "Approvals")
     @iOSXCUITFindBy(id = "approvalsButton")
     private MobileElement approvalsButton;
 
-    @AndroidFindBy(id = "supportButton")
+    @AndroidFindBy(accessibility = "Support")
     @iOSXCUITFindBy(id = "supportButton")
     private MobileElement supportButton;
 
-
-    public void clickApprovalsButton() {
-        click(approvalsButton, "Click on Approvals Button in persistent navigation bar");
+    public PersistentNavigationBar()
+    {
+        waitForVisibility(homeButton);
+        waitForVisibility(approvalsButton);
+        waitForVisibility(supportButton);
     }
 
-    public void clickHomeButton() {
-        click(homeButton, "Click on Approvals Button in persistent navigation bar");
+    public ApprovalsPage clickApprovalsButton() {
+        click(approvalsButton, "Click on Approvals Button in persistent navigation bar");
+        return new ApprovalsPage();
+    }
+
+    public HomePage clickHomeButton() {
+        waitForClickablity(homeButton);
+        click(homeButton, "Click on Home Button in persistent navigation bar");
+        return new HomePage();
+    }
+
+    public void clickHomeButtonReturnVoid() {
+        waitForClickablity(homeButton);
+        click(homeButton, "Click on Home Button in persistent navigation bar");
     }
 
     public void clickSupportButton() {
-        click(supportButton, "Click on Approvals Button in persistent navigation bar");
+        waitForClickablity(supportButton);
+        click(supportButton, "Click on Support Button in persistent navigation bar");
     }
 }

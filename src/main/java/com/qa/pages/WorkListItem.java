@@ -10,7 +10,7 @@ public class WorkListItem extends BaseTest {
     @iOSXCUITFindBy(id = "expand")
     private MobileElement expandButton;
 
-    @AndroidFindBy(id = "approve")
+    @AndroidFindBy(id = "//*[contains(@text,'Approve')]")
     @iOSXCUITFindBy(id = "approve")
     private MobileElement approveButton;
 
