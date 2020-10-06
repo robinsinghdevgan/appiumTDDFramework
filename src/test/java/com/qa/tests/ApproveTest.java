@@ -75,9 +75,35 @@ public class ApproveTest extends BaseTest {
         hm.signOut();
     }
     @Test()
-    public void loginAndGotoRequisitionDetailsScreenAndOPenApprovalBox() throws InterruptedException {
+    public void PoC() throws InterruptedException {
+        loginPage.pressLoginBtnButReturnVoid();
+        utils.log().info(loginPage.getErrTxt());
+        loginPage.clickOk();
+
+        loginPage.enterUserName(loginUsers.getJSONObject("validUser").getString("username"));
+        loginPage.pressLoginBtnButReturnVoid();
+        utils.log().info(loginPage.getErrTxt());
+        loginPage.clickOk();
+
+        loginPage.clearUName();
+        loginPage.enterPassword(loginUsers.getJSONObject("invalidUser").getString("password"));
+        loginPage.pressLoginBtnButReturnVoid();
+        utils.log().info(loginPage.getErrTxt());
+        loginPage.clickOk();
+
+        loginPage.enterUserName(loginUsers.getJSONObject("invalidUser").getString("username"));
+        loginPage.enterPassword(loginUsers.getJSONObject("invalidUser").getString("password"));
+        loginPage.pressLoginBtnButReturnVoid();
+        try{
+            utils.log().info(loginPage.getErrTxt());
+            loginPage.clickOk();
+        }catch(Exception e){
+            utils.log().error(e.getMessage());
+        }
+
         loginPage.enterUserName(loginUsers.getJSONObject("validUser").getString("username"));
         loginPage.enterPassword(loginUsers.getJSONObject("validUser").getString("password"));
+
         HomePage h = loginPage.pressLoginBtn();
         PersistentNavigationBar pnb = h.getPersistentNavBar();
         pnb.clickHomeButtonReturnVoid();

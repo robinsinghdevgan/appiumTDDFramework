@@ -1,14 +1,14 @@
 {
 	"invalidUser":{
-		"username":"AXNTREYNOLDS",
+		"username":"0DFTESTTESTTEST123",
 		"password":"123789ASD"
 	},
 	"invalidPassword":{
-		"username":"RXNTREYNOLDS",
+		"username":"0DJFMATHURIN_BOUCHER",
 		"password":"123ORACLE"
 	},
 	"validUser":{
-		"username":"RXNTREYNOLDS",
-		"password":"123qweasd"
+		"username":"0DJFMATHURIN_BOUCHER",
+		"password":"oracle@12"
 	}
 }
